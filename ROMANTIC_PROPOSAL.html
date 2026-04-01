@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Heart, My World 💖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Dancing+Script:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root {
+  --rose: #f43f5e; --rose-dark: #be123c; --rose-deep: #9f1239;
+  --gold: #fbbf24; --gold-dark: #f59e0b;
+  --bg: #0a0005; --card-bg: rgba(15,3,10,0.95);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:#fff;font-family:'Lora',serif;overflow-x:hidden;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z' fill='%23f43f5e'/%3E%3C/svg%3E"),auto}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#0a0005}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#f43f5e,#fbbf24);border-radius:3px}
+
+/* Fonts */
+.font-display{font-family:'Cormorant Garamond',serif}
+.font-cursive{font-family:'Dancing Script',cursive}
+.font-body{font-family:'Lora',serif}
+
+/* Shimmer */
+.shimmer{background:linear-gradient(90deg,#f43f5e,#fbbf24,#f43f5e,#fbbf24);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+
+/* Glass card */
+.glass{background:rgba(255,255,255,0.02);backdrop-filter:blur(20px);border:1px solid rgba(244,63,94,0.2);border-radius:20px}
+
+/* Animations */
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(3deg)}}
+@keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.15)}28%{transform:scale(1)}42%{transform:scale(1.1)}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes sparkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
+@keyframes petalFall{0%{transform:translateY(-80px) rotate(0deg);opacity:0}5%{opacity:.9}95%{opacity:.7}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+@keyframes heartRise{0%{transform:translateX(0) scale(.5);opacity:0}10%{opacity:.8}100%{transform:translateX(var(--sway)) translateY(-110vh) scale(.7);opacity:0}}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes orbit{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(40px) blur(8px)}to{opacity:1;transform:translateY(0) blur(0px)}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+.anim-float{animation:float 6s ease-in-out infinite}
+.anim-heartbeat{animation:heartbeat 1.2s ease-in-out infinite}
+.anim-sparkle{animation:sparkle 1.5s ease-in-out infinite}
+
+/* Scroll progress */
+#scroll-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#be123c,#f43f5e,#fbbf24);z-index:9998;box-shadow:0 0 8px rgba(244,63,94,.8);transition:width .1s}
+
+/* Rose petal canvas */
+#petal-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9997}
+
+/* Floating hearts layer */
+#hearts-layer{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:9000;transition:all .5s;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
+#nav.scrolled{background:rgba(5,0,5,.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(244,63,94,.15)}
+.nav-logo{font-family:'Dancing Script',cursive;font-size:1.5rem;color:#fb7185;text-decoration:none;text-shadow:0 0 15px rgba(244,63,94,.5)}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-family:'Lora',serif;font-size:.8rem;color:rgba(255,255,255,.4);text-decoration:none;letter-spacing:.08em;transition:color .3s}
+.nav-links a:hover{color:#fb7185}
+@media(max-width:640px){.nav-links{display:none}}
+
+/* Music Player */
+#music-btn{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9990;width:3.5rem;height:3.5rem;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:all .3s;background:linear-gradient(135deg,#be123c,#f43f5e)}
+#music-btn.playing{box-shadow:0 0 20px rgba(244,63,94,.8),0 0 40px rgba(244,63,94,.4)}
+#music-btn:not(.playing){box-shadow:0 0 10px rgba(244,63,94,.3)}
+#music-label{position:fixed;bottom:.6rem;right:1.2rem;z-index:9990;font-size:.65rem;color:rgba(251,113,133,.7);font-family:'Lora',serif;text-align:center;width:3.5rem}
+.pulse-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(244,63,94,.5);animation:pulse-anim 1.5s ease-out infinite}
+@keyframes pulse-anim{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.8);opacity:0}}
+
+/* ====== SECTIONS ====== */
+section{position:relative}
+
+/* HERO */
+#hero{height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:6rem}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%}
+#hero-text{position:relative;z-index:10;text-align:center;padding:0 1.5rem}
+#hero-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2rem,5vw,4.5rem);line-height:1.2;color:#fff;text-shadow:0 0 30px rgba(244,63,94,.5),0 0 60px rgba(244,63,94,.2);opacity:0;transform:translateY(50px)}
+#hero-sub{font-family:'Dancing Script',cursive;font-size:clamp(1rem,2.5vw,1.5rem);color:#fb7185;margin-top:.75rem;opacity:0;transform:translateY(20px);text-shadow:0 0 15px rgba(244,63,94,.4)}
+#scroll-hint{margin-top:1.5rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0}
+.scroll-label{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(244,63,94,.5);font-family:'Lora',serif}
+.scroll-pill{width:1.5rem;height:2.5rem;border:1px solid rgba(244,63,94,.3);border-radius:999px;display:flex;align-items:flex-start;justify-content:center;padding:.25rem}
+.scroll-dot{width:.35rem;height:.7rem;background:#f43f5e;border-radius:999px;animation:scroll-bob 1.2s ease-in-out infinite}
+@keyframes scroll-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(.5rem)}}
+
+/* TICKER */
+#ticker{padding:2rem 0;overflow:hidden;border-top:1px solid rgba(244,63,94,.15);border-bottom:1px solid rgba(244,63,94,.15);background:linear-gradient(135deg,rgba(190,18,60,.07),rgba(251,191,36,.04),rgba(190,18,60,.07));position:relative}
+#ticker-track{display:flex;white-space:nowrap;animation:ticker 45s linear infinite}
+.ticker-item{display:inline-flex;align-items:center;padding:0 2rem;font-family:'Lora',serif;font-style:italic;color:rgba(255,255,255,.65);font-size:.9rem}
+.ticker-dot{color:#f43f5e;font-size:.6rem;opacity:.5}
+.ticker-fade-l{position:absolute;left:0;top:0;bottom:0;width:5rem;background:linear-gradient(90deg,#0a0005,transparent);z-index:2}
+.ticker-fade-r{position:absolute;right:0;top:0;bottom:0;width:5rem;background:linear-gradient(90deg,transparent,#0a0005);z-index:2}
+
+/* SHAYARI */
+#shayari{padding:6rem 1.5rem}
+.section-heading{text-align:center;margin-bottom:4rem}
+.section-tag{font-family:'Dancing Script',cursive;color:#fb7185;font-size:1.2rem;display:block;margin-bottom:.5rem}
+.section-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2.5rem,5vw,4rem);color:#fff;text-shadow:0 0 30px rgba(244,63,94,.3)}
+.divider{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1rem}
+.divider-line{height:1px;width:6rem;background:linear-gradient(90deg,transparent,#f43f5e)}
+.divider-line.rev{background:linear-gradient(90deg,#f43f5e,transparent)}
+.shayari-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,480px),1fr));gap:1.5rem;max-width:1100px;margin:0 auto}
+.shayari-card{position:relative;opacity:0;transform:translateY(30px)}
+.shayari-inner{background:rgba(15,3,10,.9);border-radius:20px;padding:2rem 2rem 1.5rem;height:100%;border:1px solid rgba(244,63,94,.15);transition:all .4s;cursor:default}
+.shayari-inner:hover{border-color:rgba(244,63,94,.4);box-shadow:0 0 30px rgba(244,63,94,.15),0 0 60px rgba(244,63,94,.07);transform:translateY(-4px)}
+.shayari-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .75rem;border-radius:999px;margin-bottom:1.2rem}
+.quote-mark{position:absolute;top:.5rem;left:1rem;font-family:'Cormorant Garamond',serif;font-size:5rem;line-height:1;opacity:.06;font-style:italic;color:#f43f5e;pointer-events:none}
+.shayari-text{font-family:'Lora',serif;font-style:italic;font-size:1.05rem;line-height:1.85;color:rgba(255,255,255,.88);margin-bottom:1.5rem}
+.shayari-author{font-family:'Dancing Script',cursive;font-size:1rem;display:flex;align-items:center;gap:.75rem}
+.author-line{height:1px;flex:1;max-width:3rem}
+
+/* COMPLIMENT BOX */
+#compliments{padding:6rem 1.5rem}
+.compliment-wrapper{max-width:800px;margin:0 auto;position:relative;opacity:0;transform:scale(.95)}
+.compliment-border{position:absolute;inset:-1px;border-radius:25px;background:linear-gradient(135deg,rgba(244,63,94,.5),rgba(251,191,36,.4),rgba(244,63,94,.2));filter:blur(1px)}
+.compliment-card{position:relative;background:linear-gradient(135deg,rgba(12,2,8,.97),rgba(18,4,12,.95));border-radius:24px;overflow:hidden;border:1px solid rgba(244,63,94,.15)}
+.comp-tabs{display:flex;border-bottom:1px solid rgba(244,63,94,.15)}
+.comp-tab{flex:1;padding:1rem .5rem;display:flex;flex-direction:column;align-items:center;gap:.3rem;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.3);transition:all .3s;font-size:.7rem;font-family:'Lora',serif;letter-spacing:.05em}
+.comp-tab:hover{color:rgba(255,255,255,.6);background:rgba(255,255,255,.03)}
+.comp-tab.active{color:#fb7185;background:rgba(190,18,60,.12);border-bottom:2px solid #f43f5e}
+.comp-tab .tab-icon{font-size:1.4rem}
+.comp-body{padding:3rem 3rem 2.5rem}
+.comp-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem}
+.comp-icon-big{font-size:2.5rem}
+.comp-label{font-family:'Dancing Script',cursive;font-size:1.6rem;color:#fb7185}
+.comp-label-line{height:2px;width:3rem;margin-top:.3rem;border-radius:999px;background:linear-gradient(90deg,#f43f5e,transparent)}
+.comp-text{font-family:'Lora',serif;font-style:italic;font-size:1.15rem;line-height:1.9;color:rgba(255,255,255,.9)}
+.comp-sparkles{display:flex;align-items:center;gap:1rem;margin-top:2rem}
+.comp-sparkle-line{height:1px;flex:1;background:linear-gradient(90deg,rgba(244,63,94,.3),transparent)}
+.comp-sparkle-line.rev{background:linear-gradient(90deg,transparent,rgba(244,63,94,.3))}
+.comp-dots{display:flex;justify-content:center;gap:.75rem;margin-top:1.5rem}
+.comp-dot{height:8px;border-radius:999px;background:rgba(244,63,94,.25);cursor:pointer;transition:all .3s}
+.comp-dot.active{background:linear-gradient(90deg,#f43f5e,#fbbf24);width:24px!important}
+@media(max-width:600px){.comp-body{padding:2rem 1.5rem}.comp-text{font-size:1rem}}
+
+/* GALLERY */
+#gallery{padding:6rem 1.5rem}
+.gallery-grid{columns:1;gap:1rem;max-width:1100px;margin:0 auto}
+@media(min-width:640px){.gallery-grid{columns:2}}
+@media(min-width:1024px){.gallery-grid{columns:3}}
+.gallery-item{break-inside:avoid;margin-bottom:1rem;opacity:0;transform:scale(.9);position:relative;border-radius:16px;overflow:hidden;cursor:pointer;border:1px solid rgba(244,63,94,.1);transition:box-shadow .4s}
+.gallery-item:hover{box-shadow:0 15px 50px rgba(244,63,94,.25)}
+.gallery-item img{width:100%;display:block;object-fit:cover;transition:transform .6s;filter:brightness(.85) saturate(1.2)}
+.gallery-item:hover img{transform:scale(1.08)}
+.gallery-caption{position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1rem 1rem;background:linear-gradient(transparent,rgba(190,18,60,.8));transform:translateY(100%);transition:transform .4s;font-family:'Dancing Script',cursive;font-size:1rem;color:#fff}
+.gallery-item:hover .gallery-caption{transform:translateY(0)}
+.gallery-heart{position:absolute;top:.5rem;right:.5rem;background:rgba(244,63,94,.8);border-radius:50%;width:2rem;height:2rem;display:flex;align-items:center;justify-content:center;font-size:.8rem;opacity:0;transition:opacity .3s}
+.gallery-item:hover .gallery-heart{opacity:1}
+
+/* PROPOSAL */
+#proposal{padding:6rem 1.5rem;overflow:hidden}
+.proposal-card{max-width:800px;margin:0 auto;position:relative;opacity:0;transform:scale(.95);background:linear-gradient(135deg,rgba(12,2,8,.98),rgba(18,4,12,.96));border-radius:28px;padding:3rem 2rem;border:1px solid rgba(244,63,94,.25);box-shadow:0 0 60px rgba(244,63,94,.15),0 0 120px rgba(244,63,94,.06),inset 0 0 60px rgba(244,63,94,.03)}
+.proposal-top-border{position:absolute;top:0;left:2rem;right:2rem;height:1px;background:linear-gradient(90deg,transparent,#f43f5e,#fbbf24,#f43f5e,transparent)}
+.proposal-bottom-border{position:absolute;bottom:0;left:2rem;right:2rem;height:1px;background:linear-gradient(90deg,transparent,#fbbf24,#f43f5e,#fbbf24,transparent)}
+.hearts-row{display:flex;justify-content:center;gap:.75rem;margin-bottom:1.5rem;font-size:1.5rem}
+.proposal-quote{font-family:'Lora',serif;font-style:italic;color:rgba(255,255,255,.55);font-size:1rem;text-align:center;line-height:1.8;max-width:480px;margin:0 auto 1.5rem}
+.proposal-divider{width:4rem;height:1px;margin:0 auto 2rem;background:linear-gradient(90deg,transparent,#f43f5e,transparent)}
+.proposal-question{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2rem,5vw,3.5rem);text-align:center;color:#fff;line-height:1.3;margin-bottom:2.5rem;text-shadow:0 0 20px rgba(244,63,94,.5)}
+.btn-area{position:relative;min-height:8rem;display:flex;flex-direction:column;align-items:center}
+.no-msg{font-family:'Dancing Script',cursive;color:#fb7185;font-size:1.1rem;height:1.8rem;text-align:center;opacity:0;margin-bottom:.75rem}
+.btn-row{display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap}
+.btn-yes{padding:.9rem 3rem;border-radius:16px;border:none;cursor:pointer;font-family:'Dancing Script',cursive;font-size:1.5rem;color:#fff;background:linear-gradient(135deg,#9f1239,#e11d48,#f43f5e);box-shadow:0 0 25px rgba(244,63,94,.5),0 6px 20px rgba(0,0,0,.3);transition:all .3s;position:relative;overflow:hidden}
+.btn-yes:hover{box-shadow:0 0 45px rgba(244,63,94,.8),0 8px 25px rgba(0,0,0,.4);transform:translateY(-2px) scale(1.04)}
+.btn-yes::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#e11d48,#fbbf24,#e11d48);opacity:0;transition:opacity .3s}
+.btn-yes:hover::after{opacity:1}
+.btn-yes span{position:relative;z-index:1}
+.btn-no{padding:.9rem 2.5rem;border-radius:16px;border:1px solid rgba(255,255,255,.1);cursor:default;font-family:'Dancing Script',cursive;font-size:1.2rem;color:rgba(255,255,255,.5);background:rgba(255,255,255,.04);position:absolute;transition:none;white-space:nowrap}
+.hint-text{font-family:'Lora',serif;font-size:.7rem;color:rgba(255,255,255,.2);font-style:italic;margin-top:1rem}
+.answered-state{text-align:center;padding:2rem}
+
+/* CELEBRATION */
+#celebration{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(5,0,5,.94);display:none}
+#celebration.active{display:flex}
+#firework-canvas{position:absolute;inset:0}
+.celeb-content{position:relative;z-index:10;text-align:center;padding:2rem}
+.celeb-heart{font-size:5rem;margin-bottom:1rem;animation:heartbeat 1.2s ease-in-out infinite}
+.celeb-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(1.8rem,4vw,3.5rem);color:#fff;line-height:1.3;text-shadow:0 0 30px rgba(244,63,94,.8),0 0 60px rgba(244,63,94,.4);margin-bottom:1rem}
+.celeb-hearts-row{display:flex;justify-content:center;gap:1rem;font-size:1.5rem;margin-top:1.5rem}
+.celeb-final{font-family:'Lora',serif;font-style:italic;color:rgba(255,255,255,.55);font-size:.95rem;margin-top:1.5rem;max-width:400px;line-height:1.8}
+.close-celeb{margin-top:2rem;padding:.5rem 1.5rem;border:1px solid rgba(244,63,94,.4);border-radius:999px;background:transparent;color:rgba(255,255,255,.4);cursor:pointer;font-size:.8rem;font-family:'Lora',serif;transition:all .3s}
+.close-celeb:hover{color:#fff;border-color:#f43f5e}
+
+/* FINAL MESSAGE */
+#final{padding:7rem 1.5rem 5rem;text-align:center;overflow:hidden}
+.orbit-container{position:relative;width:9rem;height:9rem;margin:0 auto 3rem}
+.orbit-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3.5rem;opacity:0;animation:heartbeat 1.2s ease-in-out infinite}
+.orbit-ring{position:absolute;inset:0;animation:orbit 12s linear infinite}
+.orbit-dot{position:absolute;top:50%;left:50%;font-size:1.1rem}
+.final-lines{margin-bottom:3rem}
+.final-line{font-family:'Cormorant Garamond',serif;font-weight:300;color:#fff;line-height:1.3;opacity:0;transform:translateY(30px);filter:blur(6px)}
+.signature-box{display:inline-block;background:rgba(255,255,255,.02);border:1px solid rgba(244,63,94,.2);border-radius:20px;padding:2rem 3rem;box-shadow:0 0 40px rgba(244,63,94,.1);opacity:0;transform:translateX(-20px)}
+.sig-sub{font-family:'Lora',serif;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.5rem}
+.sig-name{font-family:'Dancing Script',cursive;font-size:1.8rem;color:#fb7185}
+.sig-hearts{display:flex;justify-content:center;gap:.5rem;margin-top:.75rem;font-size:1.1rem}
+
+/* FOOTER */
+footer{padding:2rem;text-align:center;border-top:1px solid rgba(244,63,94,.1)}
+.footer-text{font-family:'Dancing Script',cursive;color:rgba(251,113,133,.5);font-size:1.1rem}
+.footer-sub{font-family:'Lora',serif;font-size:.65rem;color:rgba(255,255,255,.15);margin-top:.4rem;letter-spacing:.15em;text-transform:uppercase}
+
+/* Stars */
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2s ease-in-out infinite}
+</style>
+</head>
+<body>
+
+<!-- Scroll progress -->
+<div id="scroll-progress" style="width:0"></div>
+
+<!-- Rose petal canvas -->
+<canvas id="petal-canvas"></canvas>
+
+<!-- Floating hearts layer -->
+<div id="hearts-layer"></div>
+
+<!-- Music Button -->
+<button id="music-btn" title="Toggle Music">
+  <div class="pulse-ring" id="pulse-ring" style="display:none"></div>
+  🎶
+</button>
+<div id="music-label">Play Music</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">💖 My Love</a>
+  <div class="nav-links">
+    <a href="#shayari">Poetry</a>
+    <a href="#compliments">For You</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#proposal">Proposal</a>
+    <a href="#final">Forever</a>
+  </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Stars -->
+  <div id="starfield" style="position:absolute;inset:0;z-index:1;pointer-events:none"></div>
+
+  <!-- Radial glow -->
+  <div style="position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(190,18,60,.18) 0%,transparent 70%),radial-gradient(ellipse at center,#100010 0%,#050005 100%)"></div>
+
+  <!-- Vignette -->
+  <div style="position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(5,0,5,.75) 100%)"></div>
+
+  <div id="hero-text" style="z-index:10">
+    <h1 id="hero-title" class="font-display">
+      To The Most Beautiful<br>
+      <span class="shimmer">Girl In My World</span> ❤️
+    </h1>
+    <p id="hero-sub" class="font-cursive">A love letter written in stars, for you alone...</p>
+    <div id="scroll-hint">
+      <span class="scroll-label">Scroll to discover</span>
+      <div class="scroll-pill"><div class="scroll-dot"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== TICKER ====== -->
+<div id="ticker">
+  <div class="ticker-fade-l"></div>
+  <div class="ticker-fade-r"></div>
+  <div id="ticker-track"></div>
+</div>
+
+<!-- ====== SHAYARI ====== -->
+<section id="shayari" style="background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(190,18,60,.06) 0%,transparent 70%)">
+  <div class="section-heading">
+    <span class="section-tag">Words from the soul</span>
+    <h2 class="section-title">Poetry of <span class="shimmer">Love</span></h2>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span style="font-size:1.5rem;color:#f43f5e;animation:heartbeat 1.2s infinite">❤️</span>
+      <div class="divider-line rev"></div>
+    </div>
+  </div>
+  <div class="shayari-grid" id="shayari-grid"></div>
+</section>
+
+<!-- ====== COMPLIMENT BOX ====== -->
+<section id="compliments" style="background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(251,191,36,.06) 0%,transparent 70%)">
+  <div class="section-heading">
+    <span class="section-tag" style="color:#fbbf24">Written just for you</span>
+    <h2 class="section-title">A Love Letter <span class="shimmer">In Words</span></h2>
+  </div>
+  <div class="compliment-wrapper" id="compliment-wrapper">
+    <div class="compliment-border"></div>
+    <div class="compliment-card">
+      <div class="comp-tabs" id="comp-tabs"></div>
+      <div class="comp-body">
+        <div class="comp-header">
+          <span class="comp-icon-big" id="comp-icon"></span>
+          <div>
+            <div class="comp-label" id="comp-label"></div>
+            <div class="comp-label-line"></div>
+          </div>
+        </div>
+        <p class="comp-text" id="comp-text"></p>
+        <div class="comp-sparkles">
+          <div class="comp-sparkle-line"></div>
+          <span style="color:#f43f5e;font-size:.8rem;animation:sparkle 1.5s infinite">✦</span>
+          <span style="color:#fbbf24;font-size:.8rem;animation:sparkle 1.5s .3s infinite">✦</span>
+          <span style="color:#f43f5e;font-size:.8rem;animation:sparkle 1.5s .6s infinite">✦</span>
+          <div class="comp-sparkle-line rev"></div>
+        </div>
+        <div class="comp-dots" id="comp-dots"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== GALLERY ====== -->
+<section id="gallery" style="background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(190,18,60,.05) 0%,transparent 70%)">
+  <div class="section-heading">
+    <span class="section-tag">Moments frozen in time</span>
+    <h2 class="section-title">Our <span class="shimmer">Beautiful</span> World</h2>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span>🌸</span>
+      <div class="divider-line rev"></div>
+    </div>
+  </div>
+  <div class="gallery-grid" id="gallery-grid"></div>
+  <p style="text-align:center;font-family:'Lora',serif;font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic;margin-top:2rem">✦ Replace these images with your own cherished memories ✦</p>
+</section>
+
+<!-- TICKER 2 -->
+<div id="ticker" style="margin-top:0">
+  <div class="ticker-fade-l"></div>
+  <div class="ticker-fade-r"></div>
+  <div id="ticker-track-2"></div>
+</div>
+
+<!-- ====== PROPOSAL ====== -->
+<section id="proposal" style="padding:6rem 1.5rem;overflow:hidden;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(190,18,60,.1) 0%,transparent 70%)">
+  <div class="section-heading">
+    <span class="section-tag">The moment I've been waiting for...</span>
+    <h2 class="section-title">My <span class="shimmer">Proposal</span></h2>
+  </div>
+  <div class="proposal-card" id="proposal-card">
+    <div class="proposal-top-border"></div>
+    <div class="hearts-row" id="hearts-row"></div>
+    <p class="proposal-quote">"You are the most wonderful thing that has ever happened to me. Every day with you feels like a fairytale I never want to end."</p>
+    <div class="proposal-divider"></div>
+    <h3 class="proposal-question font-display">
+      Will you go on a<br>
+      <span class="shimmer">date with me?</span> 💝
+    </h3>
+    <div class="btn-area" id="btn-area">
+      <div class="no-msg" id="no-msg"></div>
+      <div class="btn-row" id="btn-row">
+        <button class="btn-yes" id="btn-yes" onclick="handleYes()">
+          <span>YES ❤️</span>
+        </button>
+        <button class="btn-no" id="btn-no">NO 😄</button>
+      </div>
+      <p class="hint-text">Psst... the NO button might be a little shy 😉</p>
+    </div>
+    <div class="proposal-bottom-border"></div>
+  </div>
+</section>
+
+<!-- ====== FINAL MESSAGE ====== -->
+<section id="final">
+  <!-- Stars -->
+  <div id="final-stars" style="position:absolute;inset:0;pointer-events:none"></div>
+  <!-- Glow -->
+  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(190,18,60,.12) 0%,transparent 60%)"></div>
+
+  <div style="position:relative;max-width:700px;margin:0 auto">
+    <div class="orbit-container">
+      <div class="orbit-center" id="orbit-center">💖</div>
+      <div class="orbit-ring" id="orbit-ring">
+        <div class="orbit-dot" style="transform:rotate(0deg) translateX(52px) translateY(-50%)">❤️</div>
+        <div class="orbit-dot" style="transform:rotate(72deg) translateX(52px) translateY(-50%)">✨</div>
+        <div class="orbit-dot" style="transform:rotate(144deg) translateX(52px) translateY(-50%)">🌹</div>
+        <div class="orbit-dot" style="transform:rotate(216deg) translateX(52px) translateY(-50%)">💫</div>
+        <div class="orbit-dot" style="transform:rotate(288deg) translateX(52px) translateY(-50%)">💕</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:1rem;justify-content:center;margin-bottom:3rem">
+      <div style="height:1px;width:6rem;background:linear-gradient(90deg,transparent,#f43f5e)"></div>
+      <span style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Lora',serif;color:rgba(244,63,94,.7)">Forever & Always</span>
+      <div style="height:1px;width:6rem;background:linear-gradient(90deg,#f43f5e,transparent)"></div>
+    </div>
+
+    <div class="final-lines" id="final-lines">
+      <p class="final-line" style="font-size:clamp(1.5rem,4vw,2.5rem);text-shadow:0 0 15px rgba(244,63,94,.3)">Since the day you came into my life,</p>
+      <p class="final-line" style="font-size:clamp(1.5rem,4vw,2.5rem);text-shadow:0 0 15px rgba(244,63,94,.3);margin:.3rem 0">every moment feels like</p>
+      <p class="final-line shimmer" style="font-size:clamp(2rem,5.5vw,3.8rem);font-style:italic;font-weight:600;text-shadow:0 0 20px rgba(244,63,94,.6),0 0 40px rgba(244,63,94,.3)">a beautiful dream.</p>
+    </div>
+
+    <div class="signature-box" id="signature-box">
+      <p class="sig-sub">Written with love, always</p>
+      <p class="sig-name">Yours, forever ❤️</p>
+      <div class="sig-hearts">
+        <span style="animation:sparkle 1.5s infinite">💕</span>
+        <span style="animation:sparkle 1.5s .2s infinite">🌹</span>
+        <span style="animation:sparkle 1.5s .4s infinite">✨</span>
+        <span style="animation:sparkle 1.5s .6s infinite">🌹</span>
+        <span style="animation:sparkle 1.5s .8s infinite">💕</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-text">Made with ❤️ for the one who means everything</p>
+  <p class="footer-sub">Every word, every pixel — written for you</p>
+</footer>
+
+<!-- ====== CELEBRATION OVERLAY ====== -->
+<div id="celebration">
+  <canvas id="firework-canvas"></canvas>
+  <div class="celeb-content" id="celeb-content" style="opacity:0;transform:scale(.5)">
+    <div class="celeb-heart">💖</div>
+    <h2 class="celeb-title font-display">
+      You just made me the<br>
+      <span class="shimmer" style="font-weight:600;font-size:1.2em">Happiest Person</span><br>
+      in the world
+    </h2>
+    <div class="celeb-hearts-row">
+      <span style="animation:float 4s .0s ease-in-out infinite">💕</span>
+      <span style="animation:float 4s .3s ease-in-out infinite">💖</span>
+      <span style="animation:float 4s .6s ease-in-out infinite">💗</span>
+      <span style="animation:float 4s .9s ease-in-out infinite">💓</span>
+      <span style="animation:float 4s 1.2s ease-in-out infinite">💝</span>
+    </div>
+    <p class="celeb-final font-body">"Since the day you came into my life, every moment feels like a beautiful dream I never want to wake up from."</p>
+    <button class="close-celeb" onclick="closeCelebration()">Continue ❤️</button>
+  </div>
+</div>
+
+<script>
+// ============================
+// DATA
+// ============================
+const SHAYARIS = [
+  { text: "Hazaron khwahishen aisi ke har khwahish pe dam nikle...", author: "Mirza Ghalib", cat: "ghalib", color: "#f43f5e", bg: "rgba(244,63,94,.15)", tag: "🌹 Ghalib" },
+  { text: "Dil hi to hai na sang-o-khisht, dard se bhar na aaye kyun.", author: "Mirza Ghalib", cat: "ghalib", color: "#f43f5e", bg: "rgba(244,63,94,.15)", tag: "🌹 Ghalib" },
+  { text: "Ishq par zor nahin, hai ye woh aatish Ghalib — Jo lagaye na lage aur bujhaye na bane.", author: "Mirza Ghalib", cat: "ghalib", color: "#f43f5e", bg: "rgba(244,63,94,.15)", tag: "🌹 Ghalib" },
+  { text: "Unke dekhe se jo aa jaati hai munh par raunak, Woh samajhte hain ke bimaar ka haal achha hai.", author: "Mirza Ghalib", cat: "ghalib", color: "#f43f5e", bg: "rgba(244,63,94,.15)", tag: "🌹 Ghalib" },
+  { text: "Your smile is the sunrise that makes every morning worth waking up for.", author: "From the Heart", cat: "compliment", color: "#fbbf24", bg: "rgba(251,191,36,.15)", tag: "✨ For You" },
+  { text: "Your eyes hold galaxies I could spend eternity exploring and still never reach the end.", author: "From the Heart", cat: "compliment", color: "#fbbf24", bg: "rgba(251,191,36,.15)", tag: "✨ For You" },
+  { text: "The way you laugh makes the whole world feel lighter, brighter, and more beautiful.", author: "From the Heart", cat: "compliment", color: "#fb7185", bg: "rgba(251,113,133,.15)", tag: "💖 Dil Se" },
+  { text: "Tum mile to jaana maine, mohabbat kya hoti hai — ek khwab jo aankhein khuli mein bhi dikhta hai.", author: "Unknown", cat: "custom", color: "#fb7185", bg: "rgba(251,113,133,.15)", tag: "💖 Dil Se" },
+  { text: "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine.", author: "Maya Angelou", cat: "quote", color: "#c084fc", bg: "rgba(192,132,252,.15)", tag: "📜 Wisdom" },
+  { text: "Your kindness is the most beautiful thing about you — and you have so much beauty to offer.", author: "From the Heart", cat: "compliment", color: "#fbbf24", bg: "rgba(251,191,36,.15)", tag: "✨ For You" },
+];
+
+const COMPLIMENTS = [
+  { icon: "🌸", label: "Her Smile", text: "Your smile is the most beautiful thing I have ever seen. It has the power to turn the darkest of days into something radiant and warm. When you smile, the whole world lights up." },
+  { icon: "✨", label: "Her Eyes", text: "Your eyes hold a universe I never want to escape from. Every time I look into them, I find a new world — one made entirely of wonder, warmth, and love." },
+  { icon: "🌹", label: "Her Beauty", text: "You are beautiful in a way that no words could ever fully describe. Not just on the outside — but in your laughter, your spirit, your soul, and the way you make everyone feel seen." },
+  { icon: "💝", label: "Her Kindness", text: "Your kindness is a rare and precious gift. The way you care — quietly, deeply, wholeheartedly — makes you the most extraordinary person I have ever had the joy of knowing." },
+];
+
+const QUOTES = [
+  '"You are my today and all of my tomorrows."',
+  '"Every love story is beautiful, but ours is my favourite."',
+  '"I fell in love with the way you fall asleep."',
+  '"Tu hi meri shaam hai, tu subah meri." 🌸',
+  '"You are the poem I never knew how to write."',
+  '"With you, I am home." 🏡',
+  '"Mohabbat mein tere dil ka haal kya hoga..." 💖',
+  '"You make my soul smile." ✨',
+  '"Before I met you, I never knew what it was like to smile for no reason." 🌹',
+  '"Teri aankhon mein dekha jo maine, khud ko kho diya." 💫',
+];
+
+const PHOTOS = [
+  { url: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80", caption: "Every moment with you is magic ✨", h: "280px" },
+  { url: "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=500&q=80", caption: "Our story is my favourite 🌹", h: "220px" },
+  { url: "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=500&q=80", caption: "You light up my world 💫", h: "260px" },
+  { url: "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=500&q=80", caption: "Lost in you, forever 💞", h: "200px" },
+  { url: "https://images.unsplash.com/photo-1516589091380-5d8e87df6999?w=500&q=80", caption: "My heart belongs to you 💖", h: "250px" },
+  { url: "https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=500&q=80", caption: "You are my dream come true 🌸", h: "230px" },
+];
+
+// ============================
+// SCROLL PROGRESS
+// ============================
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  const p = (window.scrollY / total) * 100;
+  document.getElementById('scroll-progress').style.width = p + '%';
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 80);
+}, { passive: true });
+
+// ============================
+// STARFIELD
+// ============================
+function createStars(containerId, count) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s`;
+    c.appendChild(s);
+  }
+}
+createStars('starfield', 120);
+createStars('final-stars', 60);
+
+// ============================
+// THREE.JS HEART
+// ============================
+(function initHeart() {
+  const canvas = document.getElementById('hero-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  camera.position.set(0, 0, 4);
+
+  const resize = () => {
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  };
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Heart shape
+  const shape = new THREE.Shape();
+  shape.moveTo(0.5, 0.5);
+  shape.bezierCurveTo(0.5, 0.5, 0.4, 0, 0, 0);
+  shape.bezierCurveTo(-0.6, 0, -0.6, 0.7, -0.6, 0.7);
+  shape.bezierCurveTo(-0.6, 1.1, -0.3, 1.54, 0.5, 1.9);
+  shape.bezierCurveTo(1.2, 1.54, 1.6, 1.1, 1.6, 0.7);
+  shape.bezierCurveTo(1.6, 0.7, 1.6, 0, 1.0, 0);
+  shape.bezierCurveTo(0.7, 0, 0.5, 0.5, 0.5, 0.5);
+
+  const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.35, bevelEnabled: true, bevelSegments: 10, bevelSize: 0.08, bevelThickness: 0.08 });
+  geo.center();
+
+  const mat = new THREE.MeshPhysicalMaterial({ color: 0xe11d48, emissive: 0x9f1239, emissiveIntensity: 0.3, metalness: 0.1, roughness: 0.2, transparent: true, opacity: 0.92 });
+  const heart = new THREE.Mesh(geo, mat);
+  heart.scale.set(0.85, 0.85, 0.85);
+  scene.add(heart);
+
+  // Wireframe
+  const wireMat = new THREE.MeshBasicMaterial({ color: 0xff6b8a, wireframe: true, transparent: true, opacity: 0.07 });
+  const wireHeart = new THREE.Mesh(geo, wireMat);
+  wireHeart.scale.copy(heart.scale);
+  scene.add(wireHeart);
+
+  // Glow
+  const glowGeo = new THREE.SphereGeometry(1.5, 32, 32);
+  const glowMat = new THREE.MeshBasicMaterial({ color: 0xe11d48, transparent: true, opacity: 0.04, side: THREE.BackSide });
+  scene.add(new THREE.Mesh(glowGeo, glowMat));
+
+  // Particles
+  const pCount = 250;
+  const pPos = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.random() * Math.PI;
+    const r = 1.6 + Math.random() * 1.6;
+    pPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
+    pPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    pPos[i*3+2] = r * Math.cos(phi);
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({ color: 0xfbbf24, size: 0.04, transparent: true, opacity: 0.65 });
+  const particles = new THREE.Points(pGeo, pMat);
+  scene.add(particles);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+  const pl1 = new THREE.PointLight(0xff3366, 2, 8);
+  pl1.position.set(2, 2, 3); scene.add(pl1);
+  const pl2 = new THREE.PointLight(0xfbbf24, 1.5, 8);
+  pl2.position.set(-2, -1, 2); scene.add(pl2);
+
+  let mx = 0, my = 0;
+  window.addEventListener('mousemove', e => {
+    mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    my = -(e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.016;
+    const pulse = 1 + Math.sin(t * 2.5) * 0.04;
+    heart.scale.set(0.85 * pulse, 0.85 * pulse, 0.85 * pulse);
+    wireHeart.scale.copy(heart.scale);
+    heart.rotation.y += 0.007;
+    heart.rotation.x += (my * 0.3 - heart.rotation.x) * 0.05;
+    heart.rotation.z += (mx * 0.15 - heart.rotation.z) * 0.05;
+    wireHeart.rotation.copy(heart.rotation);
+    heart.position.y = Math.sin(t * 0.8) * 0.08;
+    wireHeart.position.y = heart.position.y;
+    particles.rotation.y += 0.002;
+    particles.rotation.x += 0.001;
+    pl1.intensity = 1.5 + Math.sin(t * 3) * 0.5;
+    pl2.intensity = 1.2 + Math.sin(t * 2.5 + 1) * 0.3;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// ============================
+// HERO GSAP ANIMATION
+// ============================
+gsap.registerPlugin(ScrollTrigger);
+gsap.timeline({ delay: 0.8 })
+  .fromTo('#hero-title', { opacity: 0, y: 60, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 1.8, ease: 'power3.out' })
+  .fromTo('#hero-sub', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' }, '-=0.8')
+  .fromTo('#scroll-hint', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, '-=0.5');
+
+gsap.to('#scroll-hint', { y: 8, repeat: -1, yoyo: true, duration: 1.2, ease: 'sine.inOut', delay: 3.5 });
+
+// ============================
+// ROSE PETALS
+// ============================
+(function initPetals() {
+  const canvas = document.getElementById('petal-canvas');
+  const ctx = canvas.getContext('2d');
+  const resize = () => { canvas.width = innerWidth; canvas.height = innerHeight; };
+  resize();
+  window.addEventListener('resize', resize);
+
+  const drawPetal = (x, y, size, angle, opacity, hue) => {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.globalAlpha = opacity;
+    const g = ctx.createRadialGradient(0, -size*.3, size*.05, 0, 0, size);
+    g.addColorStop(0, `hsla(${hue},90%,80%,1)`);
+    g.addColorStop(.5, `hsla(${hue},85%,65%,.9)`);
+    g.addColorStop(1, `hsla(${hue},80%,45%,.3)`);
+    ctx.beginPath();
+    ctx.moveTo(0, -size);
+    ctx.bezierCurveTo(size*.7, -size*.7, size*.8, size*.2, 0, size*.5);
+    ctx.bezierCurveTo(-size*.8, size*.2, -size*.7, -size*.7, 0, -size);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.restore();
+  };
+
+  const petals = Array.from({ length: 35 }, (_, i) => ({
+    x: Math.random() * innerWidth,
+    y: i < 17 ? Math.random() * innerHeight : -Math.random() * 300,
+    size: 10 + Math.random() * 18,
+    vy: .8 + Math.random() * 1.5,
+    vx: (Math.random() - .5) * 1.2,
+    angle: Math.random() * Math.PI * 2,
+    rot: (Math.random() - .5) * .04,
+    opacity: .5 + Math.random() * .5,
+    hue: 340 + Math.random() * 30,
+    sway: Math.random() * Math.PI * 2,
+    swaySpd: .01 + Math.random() * .015,
+    swayAmp: 1 + Math.random() * 2,
+  }));
+
+  const loop = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    petals.forEach(p => {
+      p.sway += p.swaySpd;
+      p.y += p.vy;
+      p.x += p.vx + Math.sin(p.sway) * p.swayAmp;
+      p.angle += p.rot;
+      if (p.y > canvas.height + 50) { p.y = -50; p.x = Math.random() * canvas.width; }
+      if (p.x > canvas.width + 50) p.x = -50;
+      if (p.x < -50) p.x = canvas.width + 50;
+      drawPetal(p.x, p.y, p.size, p.angle, p.opacity, p.hue);
+    });
+    requestAnimationFrame(loop);
+  };
+  loop();
+})();
+
+// ============================
+// FLOATING HEARTS
+// ============================
+const HEART_EMOJIS = ['❤️','💕','💖','💗','💓','💝','🌹','✨'];
+setInterval(() => {
+  const el = document.createElement('div');
+  const sway = (Math.random() - .5) * 80;
+  el.textContent = HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)];
+  el.style.cssText = `position:absolute;bottom:-30px;left:${Math.random()*100}%;font-size:${14+Math.random()*16}px;pointer-events:none;--sway:${sway}px;animation:heartRise ${6+Math.random()*8}s ease-in ${Math.random()*2}s forwards`;
+  document.getElementById('hearts-layer').appendChild(el);
+  setTimeout(() => el.remove(), 16000);
+}, 1200);
+
+// ============================
+// TICKER
+// ============================
+function buildTicker(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const items = [...QUOTES, ...QUOTES].map(q =>
+    `<span class="ticker-item">${q}</span><span class="ticker-dot">✦</span>`
+  ).join('');
+  el.innerHTML = items;
+  el.style.animation = 'ticker 45s linear infinite';
+}
+buildTicker('ticker-track');
+buildTicker('ticker-track-2');
+
+// ============================
+// SHAYARI GRID
+// ============================
+const grid = document.getElementById('shayari-grid');
+SHAYARIS.forEach((s, i) => {
+  const card = document.createElement('div');
+  card.className = 'shayari-card';
+  card.innerHTML = `
+    <div class="shayari-inner">
+      <div class="quote-mark">"</div>
+      <div class="shayari-tag" style="background:${s.bg};color:${s.color};border:1px solid ${s.color}44">
+        ${s.tag}
+      </div>
+      <p class="shayari-text">${s.text}</p>
+      <div class="shayari-author" style="color:${s.color}">
+        <div class="author-line" style="background:linear-gradient(90deg,${s.color}80,transparent)"></div>
+        — ${s.author}
+      </div>
+    </div>`;
+  grid.appendChild(card);
+
+  card.addEventListener('mouseenter', e => {
+    gsap.to(card, { rotationY: 4, rotationX: -3, duration: .4, ease: 'power2.out', transformPerspective: 800 });
+  });
+  card.addEventListener('mouseleave', e => {
+    gsap.to(card, { rotationY: 0, rotationX: 0, duration: .8, ease: 'elastic.out(1,.5)' });
+  });
+
+  gsap.fromTo(card,
+    { opacity: 0, x: i % 2 === 0 ? -50 : 50, y: 30 },
+    { opacity: 1, x: 0, y: 0, duration: .9, ease: 'power3.out', delay: (i%3) * .12,
+      scrollTrigger: { trigger: card, start: 'top 88%' } }
+  );
+});
+
+// ============================
+// COMPLIMENT BOX
+// ============================
+let activeComp = 0;
+
+function buildCompliments() {
+  const tabsEl = document.getElementById('comp-tabs');
+  const dotsEl = document.getElementById('comp-dots');
+  COMPLIMENTS.forEach((c, i) => {
+    const tab = document.createElement('button');
+    tab.className = 'comp-tab' + (i === 0 ? ' active' : '');
+    tab.innerHTML = `<span class="tab-icon">${c.icon}</span><span>${c.label}</span>`;
+    tab.onclick = () => switchComp(i);
+    tabsEl.appendChild(tab);
+
+    const dot = document.createElement('div');
+    dot.className = 'comp-dot' + (i === 0 ? ' active' : '');
+    dot.style.width = i === 0 ? '24px' : '8px';
+    dot.onclick = () => switchComp(i);
+    dotsEl.appendChild(dot);
+  });
+  renderComp(0);
+}
+
+function renderComp(i) {
+  document.getElementById('comp-icon').textContent = COMPLIMENTS[i].icon;
+  document.getElementById('comp-label').textContent = COMPLIMENTS[i].label;
+  document.getElementById('comp-text').textContent = `"${COMPLIMENTS[i].text}"`;
+}
+
+function switchComp(i) {
+  const textEl = document.getElementById('comp-text');
+  gsap.to(textEl, {
+    opacity: 0, y: 12, duration: .2, ease: 'power2.in',
+    onComplete: () => {
+      activeComp = i;
+      renderComp(i);
+      // Update tabs
+      document.querySelectorAll('.comp-tab').forEach((t, j) => t.classList.toggle('active', j === i));
+      // Update dots
+      document.querySelectorAll('.comp-dot').forEach((d, j) => {
+        d.classList.toggle('active', j === i);
+        d.style.width = j === i ? '24px' : '8px';
+      });
+      gsap.fromTo(textEl, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: .35, ease: 'power3.out' });
+    }
+  });
+}
+
+buildCompliments();
+
+gsap.fromTo('#compliment-wrapper',
+  { opacity: 0, scale: 0.93, y: 40 },
+  { opacity: 1, scale: 1, y: 0, duration: 1.4, ease: 'back.out(1.4)',
+    scrollTrigger: { trigger: '#compliment-wrapper', start: 'top 85%' } }
+);
+
+// ============================
+// GALLERY
+// ============================
+const galleryGrid = document.getElementById('gallery-grid');
+PHOTOS.forEach((p, i) => {
+  const item = document.createElement('div');
+  item.className = 'gallery-item';
+  item.innerHTML = `
+    <img src="${p.url}" alt="${p.caption}" style="height:${p.h}" loading="lazy">
+    <div class="gallery-caption">${p.caption}</div>
+    <div class="gallery-heart">❤️</div>
+  `;
+  galleryGrid.appendChild(item);
+  gsap.fromTo(item,
+    { opacity: 0, scale: .88, y: 20 },
+    { opacity: 1, scale: 1, y: 0, duration: .85, ease: 'back.out(1.2)', delay: i * .08,
+      scrollTrigger: { trigger: item, start: 'top 90%' } }
+  );
+});
+
+// ============================
+// SECTION HEADINGS ANIMATION
+// ============================
+document.querySelectorAll('.section-heading').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, y: 40 },
+    { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%' } }
+  );
+});
+
+// ============================
+// PROPOSAL SECTION
+// ============================
+gsap.fromTo('#proposal-card',
+  { opacity: 0, scale: .92 },
+  { opacity: 1, scale: 1, duration: 1.4, ease: 'back.out(1.4)',
+    scrollTrigger: { trigger: '#proposal-card', start: 'top 80%' } }
+);
+
+// Hearts row
+const hRow = document.getElementById('hearts-row');
+['🌹','💕','❤️','💕','🌹'].forEach((h, i) => {
+  const s = document.createElement('span');
+  s.textContent = h;
+  s.style.cssText = `animation:float 6s ${i*.3}s ease-in-out infinite`;
+  hRow.appendChild(s);
+});
+
+// NO button runaway
+const noBtn = document.getElementById('btn-no');
+const btnArea = document.getElementById('btn-area');
+const noMsg = document.getElementById('no-msg');
+const NO_RESPONSES = [
+  "Haha, nice try! 😄", "Nope, not letting you escape! 💕",
+  "That button doesn't work 😏", "Try again... or just say YES! 😘",
+  "Running away won't help 😂❤️", "You know you want to say YES! 🌹"
+];
+let noCount = 0;
+
+noBtn.addEventListener('mouseenter', runNo);
+noBtn.addEventListener('touchstart', runNo, { passive: true });
+
+function runNo() {
+  const area = document.getElementById('proposal-card');
+  const aRect = area.getBoundingClientRect();
+  const bRect = noBtn.getBoundingClientRect();
+  const margin = 20;
+  const maxX = aRect.width - bRect.width - margin;
+  const maxY = aRect.height - bRect.height - margin;
+  const curX = parseFloat(noBtn.style.left || bRect.left - aRect.left) || 0;
+  const curY = parseFloat(noBtn.style.top || bRect.top - aRect.top) || 0;
+  const newX = margin + Math.random() * (maxX - margin * 2);
+  const newY = margin + Math.random() * (maxY - margin * 2);
+
+  noBtn.style.position = 'absolute';
+  gsap.to(noBtn, { left: newX, top: newY, duration: .4, ease: 'power3.out' });
+
+  noMsg.textContent = NO_RESPONSES[noCount % NO_RESPONSES.length];
+  noCount++;
+  gsap.fromTo(noMsg, { opacity: 0, y: 8 }, {
+    opacity: 1, y: 0, duration: .3,
+    onComplete: () => gsap.to(noMsg, { opacity: 0, duration: .5, delay: 1.5 })
+  });
+}
+
+// YES handler
+function handleYes() {
+  const btn = document.getElementById('btn-yes');
+  gsap.to(btn, {
+    scale: 1.25, duration: .3, ease: 'back.out(2)',
+    onComplete: () => {
+      document.getElementById('btn-row').innerHTML = `
+        <div class="answered-state">
+          <div style="font-size:3rem;margin-bottom:.5rem;animation:heartbeat 1.2s infinite">💖</div>
+          <p style="font-family:'Dancing Script',cursive;font-size:1.5rem;color:#fb7185">She said YES! 🎉</p>
+        </div>`;
+      launchCelebration();
+    }
+  });
+}
+
+// ============================
+// CELEBRATION
+// ============================
+function launchCelebration() {
+  const cel = document.getElementById('celebration');
+  cel.classList.add('active');
+
+  const canvas = document.getElementById('firework-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const COLORS = ['#f43f5e','#fbbf24','#fb7185','#fde68a','#ff6b8a','#ffd700','#ff4d6d','#ffffff'];
+  const particles = [];
+
+  class Particle {
+    constructor(x, y, color, type) {
+      this.x = x; this.y = y; this.color = color; this.type = type; this.alpha = 1;
+      if (type === 'fw') {
+        const a = Math.random() * Math.PI * 2, spd = 2 + Math.random() * 6;
+        this.vx = Math.cos(a) * spd; this.vy = Math.sin(a) * spd;
+        this.g = .08; this.decay = .015 + Math.random() * .01; this.size = 2 + Math.random() * 3;
+      } else if (type === 'cf') {
+        this.vx = (Math.random() - .5) * 4; this.vy = -2 - Math.random() * 3;
+        this.g = .1; this.decay = .007; this.size = 6 + Math.random() * 8; this.angle = Math.random() * Math.PI * 2; this.rot = (Math.random() - .5) * .2;
+      } else {
+        const a = Math.random() * Math.PI * 2, spd = 1 + Math.random() * 3;
+        this.vx = Math.cos(a) * spd; this.vy = Math.sin(a) * spd - 2;
+        this.g = .04; this.decay = .009; this.size = 12 + Math.random() * 14;
+      }
+    }
+    update() { this.x += this.vx; this.y += this.vy; this.vy += this.g; this.alpha -= this.decay; if (this.type === 'cf') this.angle += this.rot; }
+    draw() {
+      ctx.globalAlpha = Math.max(0, this.alpha);
+      if (this.type === 'fw') {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+        ctx.fillStyle = this.color; ctx.shadowBlur = 8; ctx.shadowColor = this.color; ctx.fill(); ctx.shadowBlur = 0;
+      } else if (this.type === 'cf') {
+        ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
+        ctx.fillStyle = this.color; ctx.fillRect(-this.size/2, -this.size/4, this.size, this.size/2); ctx.restore();
+      } else {
+        ctx.font = `${this.size}px serif`; ctx.fillText('❤️', this.x, this.y);
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  let fwCount = 0;
+  const fwInt = setInterval(() => {
+    const x = 100 + Math.random() * (canvas.width - 200);
+    const y = 80 + Math.random() * (canvas.height * .5);
+    const col = COLORS[Math.floor(Math.random() * COLORS.length)];
+    for (let i = 0; i < 80; i++) particles.push(new Particle(x, y, col, 'fw'));
+    if (++fwCount > 12) clearInterval(fwInt);
+  }, 300);
+
+  const cfInt = setInterval(() => {
+    const x = Math.random() * canvas.width;
+    for (let i = 0; i < 5; i++) particles.push(new Particle(x, -10, COLORS[Math.floor(Math.random() * COLORS.length)], 'cf'));
+    if (Math.random() < .3) particles.push(new Particle(x, -10, '#f43f5e', 'ht'));
+  }, 60);
+
+  let animId;
+  const loop = () => {
+    ctx.fillStyle = 'rgba(5,0,5,.15)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (let i = particles.length - 1; i >= 0; i--) {
+      particles[i].update(); particles[i].draw();
+      if (particles[i].alpha <= 0) particles.splice(i, 1);
+    }
+    animId = requestAnimationFrame(loop);
+  };
+  loop();
+
+  // Animate in content
+  const content = document.getElementById('celeb-content');
+  gsap.to(content, { opacity: 1, scale: 1, duration: 1, ease: 'back.out(2)', delay: .4 });
+
+  // Pulse bg
+  gsap.to(cel, { boxShadow: '0 0 150px rgba(244,63,94,.4)', repeat: -1, yoyo: true, duration: 1.5, ease: 'sine.inOut' });
+
+  // Auto-close after 12s
+  window._celClean = () => { clearInterval(cfInt); cancelAnimationFrame(animId); };
+  setTimeout(closeCelebration, 12000);
+}
+
+function closeCelebration() {
+  if (window._celClean) { window._celClean(); window._celClean = null; }
+  const cel = document.getElementById('celebration');
+  gsap.to(cel, {
+    opacity: 0, duration: .8, ease: 'power2.in',
+    onComplete: () => cel.classList.remove('active')
+  });
+}
+
+// ============================
+// FINAL MESSAGE ANIMATIONS
+// ============================
+gsap.to('#orbit-ring', { rotation: 360, duration: 12, repeat: -1, ease: 'none', transformOrigin: '50% 50%' });
+
+gsap.fromTo('#orbit-center',
+  { opacity: 0, scale: 0 },
+  { opacity: 1, scale: 1, duration: 1.5, ease: 'elastic.out(1,.5)',
+    scrollTrigger: { trigger: '#orbit-center', start: 'top 85%' } }
+);
+
+document.querySelectorAll('.final-line').forEach((el, i) => {
+  gsap.fromTo(el,
+    { opacity: 0, y: 30, filter: 'blur(8px)' },
+    { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out', delay: i * .35,
+      scrollTrigger: { trigger: el, start: 'top 90%' } }
+  );
+});
+
+gsap.fromTo('#signature-box',
+  { opacity: 0, x: -30 },
+  { opacity: 1, x: 0, duration: 1.2, ease: 'power3.out', delay: .4,
+    scrollTrigger: { trigger: '#signature-box', start: 'top 90%' } }
+);
+
+// ============================
+// MUSIC PLAYER
+// ============================
+let audio = null;
+let playing = false;
+
+document.getElementById('music-btn').addEventListener('click', toggleMusic);
+
+function toggleMusic() {
+  if (!audio) {
+    audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+    audio.loop = true;
+    audio.volume = 0.25;
+  }
+  if (playing) {
+    audio.pause();
+    playing = false;
+    document.getElementById('music-btn').classList.remove('playing');
+    document.getElementById('music-btn').textContent = '🎶';
+    document.getElementById('pulse-ring').style.display = 'none';
+    document.getElementById('music-label').textContent = 'Play Music';
+  } else {
+    audio.play().then(() => {
+      playing = true;
+      document.getElementById('music-btn').classList.add('playing');
+      document.getElementById('music-btn').innerHTML = '<div class="pulse-ring" id="pulse-ring"></div>🎵';
+      document.getElementById('music-label').textContent = 'Music On';
+    }).catch(() => {});
+  }
+}
+
+// Try autoplay on first interaction
+document.addEventListener('click', function autoplay() {
+  if (!playing && !audio) toggleMusic();
+  document.removeEventListener('click', autoplay);
+}, { once: true });
+
+// ============================
+// SMOOTH ANCHOR SCROLLING
+// ============================
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// HeartRise keyframes (dynamic)
+if (!document.getElementById('heart-rise-kf')) {
+  const s = document.createElement('style');
+  s.id = 'heart-rise-kf';
+  s.textContent = '@keyframes heartRise{0%{transform:translateX(0) scale(.5);opacity:0}10%{opacity:.8}50%{transform:translateX(var(--sway)) scale(1);opacity:.6}100%{transform:translateX(calc(var(--sway)*1.5)) translateY(-115vh) scale(.7);opacity:0}}';
+  document.head.appendChild(s);
+}
+</script>
+</body>
+</html>
